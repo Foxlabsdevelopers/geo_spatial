@@ -14,6 +14,13 @@ Nuestros objetivos son:
 - Dibujar polígonos en el mapa
 - Simular cuartos de chat privados utilizando las areas delimitedas por los polígonos
 
+## Demo
+
+
+[![Vista previa del video](https://github.com/user-attachments/assets/18df5953-ae42-4878-b46f-bd2ffdcf47a5)](https://drive.google.com/file/d/10BvZGPKz-ILVyh412tL5IC8dgPxr3l2l/view)
+
+
+
 ## Guia de instalación de Elixir, Erlang y Phoenix
 
 https://hexdocs.pm/phoenix/installation.html
