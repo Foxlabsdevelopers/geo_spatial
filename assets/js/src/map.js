@@ -29,11 +29,15 @@ const loadMap = () => {
     attribution:
       '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
   }).addTo(map);
+
+  return map;
 };
 
-const init = () => {
+const init = (callback = () => {}) => {
   loadCss("https://unpkg.com/leaflet@1.9.4/dist/leaflet.css", () => {
-    loadScript("https://unpkg.com/leaflet@1.9.4/dist/leaflet.js", loadMap);
+    loadScript("https://unpkg.com/leaflet@1.9.4/dist/leaflet.js", () => {
+      callback(loadMap());
+    });
   });
 };
 
