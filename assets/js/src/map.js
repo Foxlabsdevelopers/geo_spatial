@@ -41,4 +41,47 @@ const init = (callback = () => {}) => {
   });
 };
 
-export { init };
+function trackMarkerMovement(marker, map, callback = () => {}) {
+  document.addEventListener("keydown", (event) => {
+    const { lat, lng } = marker.getLatLng();
+
+    const distanceToMove = event.shiftKey ? 0.0001 : 0.00005;
+
+    switch (event.key) {
+      case "ArrowUp":
+        marker.setLatLng([lat + distanceToMove, lng]);
+        callback({ lat: lat + distanceToMove, lng });
+        break;
+      case "ArrowDown":
+        marker.setLatLng({ lat: lat - distanceToMove, lng });
+        callback({ lat: lat - distanceToMove, lng });
+        break;
+      case "ArrowLeft":
+        marker.setLatLng([lat, lng - distanceToMove]);
+        callback({ lat, lng: lng - distanceToMove });
+        break;
+      case "ArrowRight":
+        marker.setLatLng([lat, lng + distanceToMove]);
+        callback({ lat, lng: lng + distanceToMove });
+        break;
+    }
+
+    map.panTo([lat, lng]);
+  });
+}
+
+function addMarker(map, position) {
+  const icon = L.icon({
+    iconUrl:
+      "https://www.freeiconspng.com/thumbs/person-icon/individual-person-icon-filled-individual-to-serve-0.png",
+    iconSize: [100, 100],
+  });
+
+  const marker = L.marker([position.lat, position.lng], { icon: icon }).addTo(
+    map
+  );
+
+  return marker;
+}
+
+export { init, trackMarkerMovement, addMarker };
