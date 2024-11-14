@@ -1,3 +1,7 @@
+import { first, second } from "./polygons";
+
+const polygons = new Map();
+
 const loadCss = (url, callback = () => {}) => {
   const link = document.createElement("link");
   link.href = url;
@@ -36,7 +40,23 @@ const loadMap = () => {
 const init = (callback = () => {}) => {
   loadCss("https://unpkg.com/leaflet@1.9.4/dist/leaflet.css", () => {
     loadScript("https://unpkg.com/leaflet@1.9.4/dist/leaflet.js", () => {
-      callback(loadMap());
+      const map = loadMap();
+      const firstPolygon = L.polygon(first).addTo(map);
+      const secondPolygon = L.polygon(second).addTo(map);
+
+      polygons.set(firstPolygon._leaflet_id, {
+        polygon: firstPolygon,
+        joined: false,
+        channel: null,
+      });
+
+      polygons.set(secondPolygon._leaflet_id, {
+        polygon: secondPolygon,
+        joined: false,
+        channel: null,
+      });
+
+      callback(map);
     });
   });
 };
@@ -84,4 +104,4 @@ function addMarker(map, position) {
   return marker;
 }
 
-export { init, trackMarkerMovement, addMarker };
+export { init, trackMarkerMovement, addMarker, polygons };
