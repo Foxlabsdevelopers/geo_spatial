@@ -40,6 +40,7 @@ channel.on("message", (payload) => {
   const messages = document.getElementById("messages");
 
   messages.innerHTML += buildMessage(from, body);
+  messages.parentElement.scrollTop = messages.scrollHeight;
 });
 
 map.init((loadedMap) => {
@@ -89,6 +90,7 @@ const handlePolygonChannel = (polygon, position) => {
       const messages = document.getElementById("private-messages");
 
       messages.innerHTML += buildMessage(from, body);
+      messages.parentElement.scrollTop = messages.scrollHeight;
     });
   } else if (!isInside && joined) {
     // Leave the current room
@@ -162,11 +164,13 @@ document.getElementById("send").addEventListener("click", () => {
     const messages = document.getElementById("private-messages");
 
     messages.innerHTML += buildMessage(identifier, message);
+    messages.parentElement.scrollTop = messages.scrollHeight;
   } else {
     channel.push("message", { from: identifier, body: message });
     const messages = document.getElementById("messages");
 
     messages.innerHTML += buildMessage(identifier, message);
+    messages.parentElement.scrollTop = messages.scrollHeight;
   }
 
   document.getElementById("message").value = "";
