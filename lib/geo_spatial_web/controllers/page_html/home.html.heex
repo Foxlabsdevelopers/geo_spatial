@@ -2,6 +2,28 @@
 <div class="flex w-full bg-gray-400 min-h-screen">
   <div id="map" class="w-4/6 h-screen"></div>
   <div id="chat" class="w-2/6 h-screen bg-gray-200 p-4">
-    <h1 class="text-2xl font-bold">Chat</h1>
+    <h1 class="text-2xl font-bold">Indexación y Chat Geoespacial en Realtime con Phoenix y JS</h1>
+    
+    <h1>Chat</h1>
+    <div class="flex flex-col">
+      <input
+        id="message"
+        class="px-4 py-2 border border-red-300 rounded-lg my-4"
+        placeholder="Introduce you message here"
+      />
+      <button id="send" class="px-4 py-2 border border-blue-600 bg-blue-200 rounded-lg">
+        Send
+      </button>
+    </div>
+
+    <h1 class="mt-10">Public Chat</h1>
+    <div class="mt-2 border border-gray-300 rounded-lg h-48 p-2 overflow-y-auto">
+      <ul id="messages"></ul>
+    </div>
+
+    <h1 class="mt-10">Private Room Chat</h1>
+    <div class="mt-2 border border-gray-300 rounded-lg h-48 p-2 overflow-y-auto">
+      <ul id="private-messages"></ul>
+    </div>
   </div>
 </div>
