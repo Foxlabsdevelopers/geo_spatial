@@ -10,6 +10,10 @@ defmodule GeoSpatialWeb.ChatChannel do
     end
   end
 
+  def join("chat:" <> _private_room_id, _params, socket) do
+    {:ok, socket}
+  end
+
   def handle_in("movement", payload, socket) do
     payload = Map.put_new(payload, "from", socket.assigns.user_id)
 

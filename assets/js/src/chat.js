@@ -57,7 +57,56 @@ map.init((loadedMap) => {
 
 function sendPosition(position) {
   channel.push("movement", { position });
+
+  map.polygons.entries().forEach(([_key, value]) => {
+    // Check if the user is inside the polygon
+    handlePolygonChannel(value.polygon, position);
+  });
 }
+
+const handlePolygonChannel = (polygon, position) => {
+  const polygonData = map.polygons.get(polygon._leaflet_id);
+
+  const isInside = polygon.getBounds().contains([position.lat, position.lng]);
+
+  const joined = polygonData.joined;
+
+  let privChannel = polygonData.channel;
+
+  if (isInside && !joined) {
+    privChannel = socket.channel("chat:" + polygon._leaflet_id, { identifier });
+
+    privChannel?.join().receive("ok", () => {
+      map.polygons.set(polygon._leaflet_id, {
+        polygon,
+        joined: true,
+        channel: privChannel,
+      });
+    });
+
+    privChannel?.on("message", (payload) => {
+      const { from, body } = payload;
+      const messages = document.getElementById("private-messages");
+
+      messages.innerHTML += buildMessage(from, body);
+    });
+  } else if (!isInside && joined) {
+    // Leave the current room
+    privChannel?.leave().receive("ok", () => {
+      // Re-instantiate the channel for the next time the user enters the room and joins
+      privChannel = socket.channel("chat:" + polygon._leaflet_id, {
+        identifier,
+      });
+    });
+
+    // Update the joined status
+    map.polygons.set(polygon._leaflet_id, {
+      polygon,
+      joined: false,
+      channel: privChannel,
+    });
+  }
+};
 
 // HELPERS
 function stringToColorSeed(str) {
@@ -103,12 +152,22 @@ const buildMessage = (from, message) => {
 document.getElementById("send").addEventListener("click", () => {
   const message = document.getElementById("message").value;
 
-  if (!message) return;
+  const joined = Array.from(map.polygons.values()).find(
+    (polygon) => polygon.joined
+  );
 
-  channel.push("message", { from: identifier, body: message });
-  const messages = document.getElementById("messages");
+  if (joined) {
+    joined.channel.push("message", { from: identifier, body: message });
 
-  messages.innerHTML += buildMessage(identifier, message);
+    const messages = document.getElementById("private-messages");
+
+    messages.innerHTML += buildMessage(identifier, message);
+  } else {
+    channel.push("message", { from: identifier, body: message });
+    const messages = document.getElementById("messages");
+
+    messages.innerHTML += buildMessage(identifier, message);
+  }
 
   document.getElementById("message").value = "";
 });
