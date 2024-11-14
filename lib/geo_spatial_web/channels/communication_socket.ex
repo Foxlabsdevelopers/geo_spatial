@@ -38,8 +38,8 @@ defmodule GeoSpatialWeb.CommunicationSocket do
   channel "chat:*", GeoSpatialWeb.ChatChannel
 
   @impl true
-  def connect(_params, socket, _connect_info) do
-    {:ok, socket}
+  def connect(params, socket, _connect_info) do
+    {:ok, assign(socket, :user_id, params["token"])}
   end
 
   # Socket IDs are topics that allow you to identify all sockets for a given user:
