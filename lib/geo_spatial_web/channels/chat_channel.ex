@@ -2,7 +2,7 @@ defmodule GeoSpatialWeb.ChatChannel do
   use GeoSpatialWeb, :channel
 
   @impl true
-  def join("chat:lobby", payload, socket) do
+  def join("chat:global", payload, socket) do
     if authorized?(payload) do
       {:ok, socket}
     else
