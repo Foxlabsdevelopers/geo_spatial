@@ -26,8 +26,6 @@ let csrfToken = document
   .querySelector("meta[name='csrf-token']")
   .getAttribute("content");
 
-import "./src/chat";
-
 let liveSocket = new LiveSocket("/live", Socket, {
   longPollFallbackMs: 2500,
   params: { _csrf_token: csrfToken },
