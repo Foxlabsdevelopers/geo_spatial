@@ -10,6 +10,14 @@ defmodule GeoSpatialWeb.ChatChannel do
     end
   end
 
+  def handle_in("movement", payload, socket) do
+    payload = Map.put_new(payload, "from", socket.assigns.user_id)
+
+    broadcast_from!(socket, "movement", payload)
+
+    {:noreply, socket}
+  end
+
   # Channels can be used in a request/response fashion
   # by sending replies to requests from the client
   @impl true

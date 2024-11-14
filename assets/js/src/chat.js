@@ -14,12 +14,11 @@ channel
     console.log("Unable to join", resp);
   });
 
-// send ping to server
-channel
-  .push("ping", { hello: "I am the client!" })
-  .receive("ok", (response) => {
-    console.log("ping", response);
-  });
+channel.on("movement", (payload) => {
+  const { from, position } = payload;
+
+  console.log(`[${from}] moved to: ${position.lat}, ${position.lng}`);
+});
 
 mapLoader.init((loadedMap) => {
   map = loadedMap;
@@ -32,10 +31,14 @@ mapLoader.init((loadedMap) => {
 
   const marker = L.marker([20.683972, -87.064007], { icon: icon }).addTo(map);
 
-  trackMarkerMovement(marker);
+  trackMarkerMovement(marker, map);
 });
 
-function trackMarkerMovement(marker) {
+function sendPosition(position) {
+  channel.push("movement", { position });
+}
+
+function trackMarkerMovement(marker, map) {
   document.addEventListener("keydown", (event) => {
     const { lat, lng } = marker.getLatLng();
 
@@ -44,15 +47,19 @@ function trackMarkerMovement(marker) {
     switch (event.key) {
       case "ArrowUp":
         marker.setLatLng([lat + distanceToMove, lng]);
+        sendPosition({ lat: lat + distanceToMove, lng });
         break;
       case "ArrowDown":
-        marker.setLatLng([lat - distanceToMove, lng]);
+        marker.setLatLng({ lat: lat - distanceToMove, lng });
+        sendPosition({ lat: lat - distanceToMove, lng });
         break;
       case "ArrowLeft":
         marker.setLatLng([lat, lng - distanceToMove]);
+        sendPosition({ lat, lng: lng - distanceToMove });
         break;
       case "ArrowRight":
         marker.setLatLng([lat, lng + distanceToMove]);
+        sendPosition({ lat, lng: lng + distanceToMove });
         break;
     }
 
