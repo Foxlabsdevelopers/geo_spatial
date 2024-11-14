@@ -30,5 +30,32 @@ mapLoader.init((loadedMap) => {
     iconSize: [70, 70],
   });
 
-  L.marker([20.683972, -87.064007], { icon: icon }).addTo(map);
+  const marker = L.marker([20.683972, -87.064007], { icon: icon }).addTo(map);
+
+  trackMarkerMovement(marker);
 });
+
+function trackMarkerMovement(marker) {
+  document.addEventListener("keydown", (event) => {
+    const { lat, lng } = marker.getLatLng();
+
+    const distanceToMove = event.shiftKey ? 0.0001 : 0.00005;
+
+    switch (event.key) {
+      case "ArrowUp":
+        marker.setLatLng([lat + distanceToMove, lng]);
+        break;
+      case "ArrowDown":
+        marker.setLatLng([lat - distanceToMove, lng]);
+        break;
+      case "ArrowLeft":
+        marker.setLatLng([lat, lng - distanceToMove]);
+        break;
+      case "ArrowRight":
+        marker.setLatLng([lat, lng + distanceToMove]);
+        break;
+    }
+
+    map.panTo([lat, lng]);
+  });
+}
