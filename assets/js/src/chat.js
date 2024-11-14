@@ -3,10 +3,6 @@ import socket from "../communication_socket";
 
 let map;
 
-mapLoader.init((loadedMap) => {
-  map = loadedMap;
-});
-
 let channel = socket.channel("chat:global", {});
 
 channel
@@ -24,3 +20,15 @@ channel
   .receive("ok", (response) => {
     console.log("ping", response);
   });
+
+mapLoader.init((loadedMap) => {
+  map = loadedMap;
+
+  const icon = L.icon({
+    iconUrl:
+      "https://www.freeiconspng.com/thumbs/person-icon/individual-person-icon-filled-individual-to-serve-0.png",
+    iconSize: [70, 70],
+  });
+
+  L.marker([20.683972, -87.064007], { icon: icon }).addTo(map);
+});
